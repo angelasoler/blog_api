@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :post do
-    title { "MyString" }
-    content { "MyString" }
-    status { 1 }
-    user { nil }
+    title { Faker::Lorem.sentence }
+    content { Faker::Lorem.paragraph }
+    status { rand(0..1) }
+    user
   end
 end
