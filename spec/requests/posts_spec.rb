@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'byebug'
 
 RSpec.describe Post do
   describe 'GET /posts' do
@@ -11,10 +10,27 @@ RSpec.describe Post do
       expect(response).to have_http_status(200)
     end
   
+    describe 'Search' do
+      let!(:hellow_world) { create(:published_post, title: 'Hellow world') }
+      let!(:hellow_rails) { create(:published_post, title: 'Hellow Rails') }
+      let!(:malala_pitch) { create(:published_post, content: 'Hellow my name Malala') }
+      let!(:exposing_api) { create(:published_post, title: 'Exposing an API') }
+
+      it 'should fillter posts by title' do
+        get "/posts?search=Hellow "
+        payload = JSON.parse(response.body)
+        
+        expect(payload).not_to be_empty
+        expect(payload.size).to eq(2)
+        expect(payload.map{ |p| p['id'] }.sort).to eq([hellow_world.id, hellow_rails.id].sort)
+        expect(response).to have_http_status(200)
+      end
+    end
 
     context 'with data in the DB' do
       describe 'GET /posts' do
         let!(:posts) { create_list(:post, 10, status: 'published') }
+
         it 'should return all published post' do
 
           get '/posts'
@@ -27,6 +43,7 @@ RSpec.describe Post do
 
       describe 'GET /posts/{id}' do
         let!(:post) { create(:post) }
+
         it 'should return a post' do
 
           get "/posts/#{post.id}"
