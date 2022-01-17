@@ -9,14 +9,15 @@ RSpec.describe 'Posts with authentication' do
         let!(:auth_headers) { { 'Authorization' => "Bearer #{user.auth_token}" } }
 
         before { get "/posts/#{other_user_published_post.id}", headers: auth_headers }
-
         context 'payload' do
           subject { payload }
+
           it { is_expected.to include(:id) }
         end
 
         context 'response' do
           subject { response }
+
           it { is_expected.to have_http_status(200) }
         end
       end
@@ -27,14 +28,15 @@ RSpec.describe 'Posts with authentication' do
         let!(:auth_headers) { { 'Authorization' => "Bearer #{user.auth_token}" } }
 
         before { get "/posts/#{other_user_archived_post.id}", headers: auth_headers }
-        
         context 'payload' do
           subject { payload }
+
           it { is_expected.to include(:error) }
         end
 
         context 'response' do
           subject { response }
+
           it { is_expected.to have_http_status(404) }
         end
       end
@@ -47,8 +49,7 @@ RSpec.describe 'Posts with authentication' do
       let!(:auth_headers) { { 'Authorization' => "Bearer #{user.auth_token}" } }
       let!(:create_params) { { 'post' => {'title' => 'title', 'content' => 'content', 'status' => 'published'} } }
 
-      before { post "/posts", params: create_params, headers: auth_headers }
-        
+      before { post "/posts", params: create_params, headers: auth_headers }  
       context 'payload' do
         subject { payload }
         
@@ -66,7 +67,6 @@ RSpec.describe 'Posts with authentication' do
       let!(:create_params) { { 'post' => {'title' => 'title', 'content' => 'content', 'status' => 'published'} } }
 
       before { post "/posts", params: create_params }
-        
       context 'payload' do
         subject { payload }
 
@@ -90,7 +90,6 @@ RSpec.describe 'Posts with authentication' do
         let!(:update_params) { { 'post' => {'title' => 'title', 'content' => 'content', 'status' => 'published'} } }
 
         before { put "/posts/#{user_post.id}", params: update_params, headers: auth_headers }
-          
         context 'payload' do
           subject { payload }
 
@@ -112,7 +111,6 @@ RSpec.describe 'Posts with authentication' do
         let!(:update_params) { { 'post' => {'title' => 'title', 'content' => 'content', 'status' => 'published'} } }
 
         before { put "/posts/#{other_user_published_post.id}", params: update_params, headers: auth_headers }
-          
         context 'payload' do
           subject { payload }
 
