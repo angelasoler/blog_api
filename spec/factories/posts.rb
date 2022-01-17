@@ -12,4 +12,11 @@ FactoryBot.define do
     status { 'published' }
     user
   end
+  
+  factory :archived_post, class: 'Post' do
+    title { Faker::Lorem.sentence }
+    content { Faker::Lorem.paragraph }
+    status { 'archived' }
+    user
+  end
 end

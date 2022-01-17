@@ -1,4 +1,5 @@
 class PostsController < ApplicationController
+  before_action :authenticate_user!, only: %i[create show]
 
   rescue_from Exception do |e|
     render json: { error: e.message }, status: 500
@@ -16,25 +17,43 @@ class PostsController < ApplicationController
 
   def show
     @post = Post.find(params[:id])
-    render json: @post, status: 200
+    if (@post.published? || (Current.user && @post.user_id == Current.user.id))
+      render json: @post, status: 200
+    elsif @post.archived?
+      render json: { error: 'Not Found' }, status: 404
+    end
   end
 
   def create
-    @post = Post.create!(create_params)
+    @post = Current.user.posts.create!(create_params)
     render json: @post, status: 201
   end
 
   def update
-    @post = Post.find(params[:id])
+    @post = Current.user.posts.find(params[:id])
     @post.update!(update_params)
     render json: @post, status: 200
   end
 
   def create_params
-    params.require(:post).permit(:title, :content, :published, :user_id)
+    params.require(:post).permit(:title, :content, :published)
   end
 
   def update_params
     params.require(:post).permit(:title, :content, :published)
+  end
+
+  private
+
+  def authenticate_user!
+    token_regex = /Bearer (\w+)/
+    headers = request.headers
+    if headers['Authorization'].present? && headers['Authorization'].match(token_regex)
+      token = headers['Authorization'].match(token_regex)[1]
+      if(Current.user = User.find_by_auth_token(token))
+        return
+      end
+    end
+    render json: { error: 'Unauthorized' }, status: :unauthorized
   end
 end
