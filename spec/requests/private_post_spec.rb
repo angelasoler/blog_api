@@ -7,6 +7,7 @@ RSpec.describe 'Posts with authentication' do
         let!(:user) { create(:user) }
         let!(:other_user_published_post) { create(:published_post) }
         let!(:auth_headers) { { 'Authorization' => "Bearer #{user.auth_token}" } }
+        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
 
         before { get "/posts/#{other_user_published_post.id}", headers: auth_headers }
         context 'payload' do
@@ -26,6 +27,7 @@ RSpec.describe 'Posts with authentication' do
         let!(:user) { create(:user) }
         let!(:other_user_archived_post) { create(:archived_post) }
         let!(:auth_headers) { { 'Authorization' => "Bearer #{user.auth_token}" } }
+        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
 
         before { get "/posts/#{other_user_archived_post.id}", headers: auth_headers }
         context 'payload' do
@@ -48,6 +50,7 @@ RSpec.describe 'Posts with authentication' do
       let!(:user) { create(:user) }
       let!(:auth_headers) { { 'Authorization' => "Bearer #{user.auth_token}" } }
       let!(:create_params) { { 'post' => {'title' => 'title', 'content' => 'content', 'status' => 'published'} } }
+      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
 
       before { post "/posts", params: create_params, headers: auth_headers }  
       context 'payload' do
@@ -65,6 +68,7 @@ RSpec.describe 'Posts with authentication' do
 
     context 'without authentication' do
       let!(:create_params) { { 'post' => {'title' => 'title', 'content' => 'content', 'status' => 'published'} } }
+      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
 
       before { post "/posts", params: create_params }
       context 'payload' do
@@ -88,6 +92,7 @@ RSpec.describe 'Posts with authentication' do
         let!(:user_post) { create(:published_post, user_id: user.id) }
         let!(:auth_headers) { { 'Authorization' => "Bearer #{user.auth_token}" } }
         let!(:update_params) { { 'post' => {'title' => 'title', 'content' => 'content', 'status' => 'published'} } }
+        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
 
         before { put "/posts/#{user_post.id}", params: update_params, headers: auth_headers }
         context 'payload' do
@@ -109,6 +114,7 @@ RSpec.describe 'Posts with authentication' do
         let!(:other_user_published_post) { create(:published_post) }
         let!(:auth_headers) { { 'Authorization' => "Bearer #{user.auth_token}" } }
         let!(:update_params) { { 'post' => {'title' => 'title', 'content' => 'content', 'status' => 'published'} } }
+        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
 
         before { put "/posts/#{other_user_published_post.id}", params: update_params, headers: auth_headers }
         context 'payload' do
