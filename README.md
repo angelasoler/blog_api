@@ -20,3 +20,11 @@ This Blog Api is meant to allows you to manage blog posts(create, edit, updated 
 In order to test its REST response, you may use [postman](https://www.postman.com/) services, you most install PostmanAgent and run ```rails s``` while testing in the site:
 
 ![postmantest](https://user-images.githubusercontent.com/53455663/155532176-a513e68f-6e83-47a8-a7ea-ab9c65a394d5.png)
+
+With these project I learned and use the next subjects:
+
+- Active Model Serializer.
+- BackGround Jobs and Active Jobs.
+- Action Mailer.
+- N + 1 Query problem.
+- Authentication and authorization with auth tokens.
